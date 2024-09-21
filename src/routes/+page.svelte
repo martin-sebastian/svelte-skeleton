@@ -10,18 +10,37 @@
 
 	// Define column structure for AG-Grid
 	let columnDefs = [
+		{ field: 'title', sortable: true, filter: true },
+		{ field: 'stock_number', sortable: true, filter: true },
+		{ field: 'year', sortable: true, filter: true },
 		{ field: 'make', sortable: true, filter: true },
 		{ field: 'model', sortable: true, filter: true },
-		{ field: 'price', sortable: true, filter: true }
+		{ field: 'type', sortable: true, filter: true },
+		{
+			field: 'price',
+			sortable: true,
+			filter: true,
+			valueFormatter: (params) => {
+				// Format price as currency (USD)
+				return new Intl.NumberFormat('en-US', {
+					style: 'currency',
+					currency: 'USD'
+				}).format(params.value);
+			}
+		}
 	];
 
 	// Fetch data from PocketBase
 	async function fetchData() {
 		try {
-			const response = await pb.collection('vehicles').getList(1, 20); // Adjust collection name and pagination as needed
+			const response = await pb.collection('vehicles').getList(1, 50); // Adjust collection name and pagination as needed
 			rowData = response.items.map((item) => ({
-				make: item.make,
-				model: item.model,
+				title: item.title,
+				stock_number: item.stock_number,
+				year: item.year,
+				make: item.manufacturer,
+				model: item.model_name,
+				type: item.model_type,
 				price: item.price
 			}));
 			initializeGrid(); // Initialize AG-Grid once the data is fetched
@@ -46,5 +65,8 @@
 	onMount(fetchData);
 </script>
 
-<!-- AG-Grid Container -->
-<div class="ag-theme-alpine" style="height: 400px; width: 600px;" bind:this={gridDiv}></div>
+<div class="mx-auto w-full px-4 py-4">
+	<h1 class="py-4 text-start text-3xl font-bold">Vehicles Example</h1>
+	<!-- AG-Grid Container -->
+	<div class="ag-theme-alpine-dark" style="height: 90vh; width: 100%;" bind:this={gridDiv}></div>
+</div>

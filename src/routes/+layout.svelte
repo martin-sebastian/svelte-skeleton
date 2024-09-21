@@ -1,22 +1,27 @@
 <script lang="ts">
+	export let data; // Get the user data passed from the load function
 	import '../app.css';
 	import { Nav } from '@skeletonlabs/skeleton-svelte';
-
-	// Import the PocketBase instance from the utility module
-	import pb from '$lib/pocketbase';
+	import pb from '$lib/pocketbase'; // Import PocketBase client
 
 	// Icons
 	import IconMenu from 'lucide-svelte/icons/menu';
+	import IconBike from 'lucide-svelte/icons/bike';
 	import IconFolder from 'lucide-svelte/icons/folder';
 	import IconImage from 'lucide-svelte/icons/image';
-	import IconMusic from 'lucide-svelte/icons/music';
 	import IconVideo from 'lucide-svelte/icons/video';
+	import IconLogin from 'lucide-svelte/icons/circle-user-round';
+	import IconLogout from 'lucide-svelte/icons/log-out';
 	import IconSettings from 'lucide-svelte/icons/settings';
 
-	let hrefExample = '#';
+	let hrefHome = '/';
+	let hrefVehicles = '/vehicles';
+	let hrefParts = '/parts';
+	let hrefVideos = '/protected';
+	let hrefLogin = '/login';
+	let hrefSettings = '/settings';
 
 	import { writable } from 'svelte/store';
-
 	let isExpanded = writable(false);
 
 	function toggleNav() {
@@ -24,46 +29,52 @@
 		console.log($isExpanded); // Check if the value is changing
 	}
 
-	// Example of using PocketBase in the layout
-	async function fetchData() {
-		try {
-			const data = await pb.collection('vehicles').getList(1, 20); // Fetch data from the 'vehicles' collection
-			console.log('Fetched vehicles:', data);
-		} catch (error) {
-			console.error('Error fetching data:', error);
-		}
+	// Logout function
+	function logout() {
+		pb.authStore.clear();
+		window.location.href = '/login'; // Redirect after logout
 	}
-
-	fetchData(); // Fetch the data when the layout mounts
 </script>
 
 <div class="card grid h-[100vh] w-full grid-cols-[auto_1fr] border-[1px] border-surface-100-900">
-	<!-- Component -->
+	<!-- Navigation Rail -->
 	<Nav.Rail expanded={$isExpanded}>
 		{#snippet header()}
-			<Nav.Tile href="/" title="Menu" labelExpanded="">
+			<Nav.Tile title="Menu" labelExpanded="">
 				<button on:click={toggleNav}> <IconMenu /> </button>
 			</Nav.Tile>
 		{/snippet}
 		{#snippet tiles()}
-			<Nav.Tile id="0" label="Files" labelExpanded="Files" href={hrefExample}>
+			<Nav.Tile id="0" labelExpanded="Home" href={hrefHome}>
+				<IconBike />
+			</Nav.Tile>
+			<Nav.Tile id="1" labelExpanded="Vehicles" href={hrefVehicles}>
 				<IconFolder />
 			</Nav.Tile>
-			<Nav.Tile id="1" label="Images" labelExpanded="Images" href={hrefExample}>
+			<Nav.Tile id="2" labelExpanded="Parts" href={hrefParts}>
 				<IconImage />
 			</Nav.Tile>
-			<Nav.Tile id="2" label="Music" labelExpanded="Music" href={hrefExample}>
-				<IconMusic />
-			</Nav.Tile>
-			<Nav.Tile id="3" label="Videos" labelExpanded="Videos" href={hrefExample}>
+			<Nav.Tile id="3" labelExpanded="Videos" href={hrefVideos}>
 				<IconVideo />
 			</Nav.Tile>
 		{/snippet}
 		{#snippet footer()}
-			<Nav.Tile labelExpanded="Settings" href="/settings" title="settings">
+			<!-- Conditionally render the login/logout option based on whether the user is logged in -->
+			{#if data.user}
+				<Nav.Tile id="4" labelExpanded="Logout">
+					<button on:click={logout}><IconLogout /></button>
+				</Nav.Tile>
+			{:else}
+				<Nav.Tile id="5" labelExpanded="Login" href={hrefLogin}>
+					<IconLogin />
+				</Nav.Tile>
+			{/if}
+			<Nav.Tile id="6" labelExpanded="Settings" href={hrefSettings}>
 				<IconSettings />
 			</Nav.Tile>
 		{/snippet}
 	</Nav.Rail>
+
+	<!-- Page content -->
 	<slot></slot>
 </div>
