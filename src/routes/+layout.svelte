@@ -61,9 +61,11 @@
 		{#snippet footer()}
 			<!-- Conditionally render the login/logout option based on whether the user is logged in -->
 			{#if data.user}
-				<Nav.Tile id="4" labelExpanded="Logout">
-					<button on:click={logout}><IconLogout /></button>
-				</Nav.Tile>
+				<button on:click={logout} type="button" aria-label="Logout">
+					<Nav.Tile id="4" labelExpanded="Logout">
+						<IconLogout />
+					</Nav.Tile>
+				</button>
 			{:else}
 				<Nav.Tile id="5" labelExpanded="Login" href={hrefLogin}>
 					<IconLogin />
@@ -74,7 +76,6 @@
 			</Nav.Tile>
 		{/snippet}
 	</Nav.Rail>
-
 	<!-- Page content -->
 	<slot></slot>
 </div>

@@ -68,5 +68,5 @@
 <div class="mx-auto w-full px-4 py-4">
 	<h1 class="py-4 text-start text-3xl font-bold">Vehicles Example</h1>
 	<!-- AG-Grid Container -->
-	<div class="ag-theme-alpine-dark" style="height: 90vh; width: 100%;" bind:this={gridDiv}></div>
+	<div class="ag-theme-alpine-dark" style="height: 85vh; width: 100%;" bind:this={gridDiv}></div>
 </div>
