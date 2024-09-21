@@ -17,7 +17,7 @@
 	let hrefHome = '/';
 	let hrefVehicles = '/vehicles';
 	let hrefParts = '/parts';
-	let hrefVideos = '/protected';
+	let hrefVideos = '/user';
 	let hrefLogin = '/login';
 	let hrefSettings = '/settings';
 
