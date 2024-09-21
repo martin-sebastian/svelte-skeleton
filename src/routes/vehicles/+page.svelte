@@ -2,10 +2,11 @@
 	import 'ag-grid-community/styles/ag-grid.css';
 	import 'ag-grid-community/styles/ag-theme-alpine.css';
 	import { onMount } from 'svelte';
-	import { Grid } from 'ag-grid-community';
+	import { createGrid } from 'ag-grid-community'; // Import createGrid method
 	import pb from '$lib/pocketbase'; // Import PocketBase client
 
 	let gridDiv; // Bind to this div for AG-Grid
+	let gridApi; // Store the grid API
 	let rowData = []; // Array to hold vehicle data with images
 
 	// Define column structure for AG-Grid
@@ -32,62 +33,60 @@
 	// Fetch data from PocketBase
 	async function fetchData() {
 		try {
-			const vehicles = await pb.collection('vehicles').getList(1, 50, {}, { autoCancel: false }); // Fetch vehicle data
+			// Fetch vehicles with expanded vehicle_images relation
+			const vehicles = await pb.collection('vehicles').getList(1, 150, {
+				expand: 'vehicle_images'
+			});
 
-			// Loop through vehicles and fetch associated images
-			const vehiclesWithImages = await Promise.all(
-				vehicles.items.map(async (vehicle) => {
-					// Fetch the first image for each vehicle
-					const images = await pb.collection('vehicle_images').getList(
-						1,
-						1,
-						{
-							filter: `vehicleid="${vehicle.id}"`,
-							sort: 'created' // Fetch the first image by creation date
-						},
-						{ autoCancel: false }
-					); // Disable auto-cancel for this request
+			// Process the vehicle data
+			rowData = vehicles.items.map((vehicle) => {
+				const images = vehicle.expand?.vehicle_images || [];
 
-					// Construct image URL if available
-					const imageUrl =
-						images.items.length > 0
-							? `http://127.0.0.1:8090/api/files/${images.items[0].collectionId}/${images.items[0].id}/${images.items[0].image}`
-							: null;
+				// Get the first image URL if available
+				const imageUrl =
+					images.length > 0
+						? `http://127.0.0.1:8090/api/files/${images[0].collectionId}/${images[0].id}/${images[0].image}`
+						: null;
 
-					// Return the vehicle data along with the first image URL
-					return {
-						title: vehicle.title,
-						year: vehicle.year,
-						make: vehicle.manufacturer,
-						model: vehicle.model_name,
-						price: vehicle.price,
-						imageUrl: imageUrl // Attach image URL to the row data
-					};
-				})
-			);
+				return {
+					title: vehicle.title,
+					year: vehicle.year,
+					make: vehicle.manufacturer,
+					model: vehicle.model_name,
+					price: vehicle.price,
+					imageUrl: imageUrl // Attach image URL to the row data
+				};
+			});
 
-			rowData = vehiclesWithImages; // Assign the data to rowData
 			initializeGrid(); // Initialize AG-Grid once the data is fetched
 		} catch (error) {
 			console.error('Error fetching data from PocketBase:', error);
 		}
 	}
 
-	// Initialize AG-Grid with fetched data
+	// Initialize AG-Grid with fetched data using createGrid
 	function initializeGrid() {
-		new Grid(gridDiv, {
+		const gridOptions = {
 			columnDefs,
 			rowData,
 			defaultColDef: {
 				flex: 1,
 				minWidth: 100
 			}
-		});
+		};
+
+		// Create the grid using the createGrid method
+		gridApi = createGrid(gridDiv, gridOptions);
 	}
 
 	// Call fetchData on component mount
 	onMount(fetchData);
 </script>
 
-<!-- AG-Grid Container -->
-<div class="ag-theme-alpine" style="height: 90vh; width: 100%;" bind:this={gridDiv}></div>
+<div class="mx-auto w-full">
+	<div class="w-full">
+		<h1 class="px-4 py-4 text-start text-3xl font-bold">Vehicles Example</h1>
+	</div>
+	<!-- AG-Grid Container -->
+	<div class="ag-theme-alpine-dark w-full px-4" style="height: 100vh;" bind:this={gridDiv}></div>
+</div>

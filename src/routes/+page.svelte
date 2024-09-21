@@ -65,8 +65,10 @@
 	onMount(fetchData);
 </script>
 
-<div class="mx-auto w-full px-4 py-4">
-	<h1 class="py-4 text-start text-3xl font-bold">Vehicles Example</h1>
+<div class="mx-auto w-full">
+	<div class="w-full">
+		<h1 class="px-4 py-4 text-start text-3xl font-bold">Vehicles Example</h1>
+	</div>
 	<!-- AG-Grid Container -->
-	<div class="ag-theme-alpine-dark" style="height: 85vh; width: 100%;" bind:this={gridDiv}></div>
+	<div class="ag-theme-alpine-dark w-full px-4" style="height: 100vh;" bind:this={gridDiv}></div>
 </div>
