@@ -21,10 +21,9 @@
 	}
 </script>
 
-<div class="container mx-auto max-w-md px-4 py-8">
-	<h1 class="mb-6 text-2xl font-bold">Login</h1>
-
-	<div class="card p-4 preset-filled-surface-100-900">
+<div class="from-black-500 flex h-screen items-center justify-center bg-gradient-to-r">
+	<div class="card w-96 p-10 shadow-lg preset-filled-surface-100-900">
+		<h1 class="mb-6 text-2xl font-bold">Login</h1>
 		<form on:submit|preventDefault={login} class="space-y-4">
 			<!-- Email Input -->
 			<div>
@@ -36,6 +35,7 @@
 					required
 					placeholder="Enter your email"
 					class="w-full rounded border p-2"
+					autocomplete="email"
 				/>
 			</div>
 
@@ -49,6 +49,7 @@
 					required
 					placeholder="Enter your password"
 					class="w-full rounded border p-2"
+					autocomplete="current-password"
 				/>
 			</div>
 

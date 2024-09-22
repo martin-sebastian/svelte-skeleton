@@ -70,5 +70,5 @@
 		<h1 class="px-4 py-4 text-start text-3xl font-bold">Vehicles Example</h1>
 	</div>
 	<!-- AG-Grid Container -->
-	<div class="ag-theme-alpine-dark w-full px-4" style="height: 100vh;" bind:this={gridDiv}></div>
+	<div class="ag-theme-alpine-dark w-full px-4" style="height: 90vh;" bind:this={gridDiv}></div>
 </div>
