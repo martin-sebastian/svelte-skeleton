@@ -1,21 +1,17 @@
+<!-- src/routes/login/+page.svelte -->
 <script lang="ts">
-	import { goto } from '$app/navigation'; // SvelteKit's navigation helper
-	import pb from '$lib/pocketbase'; // Import PocketBase client
+	import { goto } from '$app/navigation';
+	import pb from '$lib/pocketbase';
 
 	let email = '';
 	let password = '';
-	let errorMessage = ''; // To display any error messages
+	let errorMessage = '';
 
-	// Function to log in the user
 	async function login() {
 		try {
-			// Attempt to authenticate with PocketBase using email and password
 			await pb.collection('users').authWithPassword(email, password);
-
-			// If login is successful, redirect the user to the homepage (or any protected page)
 			goto('/');
 		} catch (error) {
-			// If login fails, show an error message
 			errorMessage = 'Login failed. Please check your credentials.';
 		}
 	}

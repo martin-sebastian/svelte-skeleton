@@ -1,7 +1,10 @@
 <script lang="ts">
-	export let data; // Get the user data passed from the load function
+	export let data: {
+		user: any;
+	}; // Get the user data passed from the load function
+
 	import '../app.css';
-	import { Nav } from '@skeletonlabs/skeleton-svelte';
+	import { Nav } from '@skeletonlabs/skeleton';
 	import pb from '$lib/pocketbase'; // Import PocketBase client
 
 	// Icons
@@ -29,7 +32,7 @@
 	// Logout function
 	function logout() {
 		pb.authStore.clear();
-		window.location.href = '/login'; // Redirect after logout
+		goto('/login');
 	}
 
 	function toggleNav() {
