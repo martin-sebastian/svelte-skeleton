@@ -133,34 +133,27 @@
 </script>
 
 <div class="w-full overflow-y-auto">
-	<h1 class="mt-5 px-5 text-start text-3xl heading-font-weight">Vehicle Inventory</h1>
-	<div class="mx-auto">
-		<div class="card m-5 preset-filled-surface-100-900">
-			<!-- AG-Grid Container -->
-			<div
-				class="ag-theme-alpine-dark"
-				style="height: 90vh; width: 100%;"
-				bind:this={gridDiv}
-			></div>
-		</div>
-	</div>
-</div>
+	<h1 class="mt-4 px-4 text-start text-3xl heading-font-weight">Vehicle Inventory</h1>
 
-<!-- Popup for displaying all images -->
-{#if showPopup}
-	<div id="image-popup" class="fixed z-10 h-screen w-full preset-filled-surface-100-900">
-		<button class="close-button" on:click={closePopup}>×</button>
-		<div
-			class="card card-hover block max-w-md divide-y overflow-hidden border border-surface-200-800 divide-surface-200-800 preset-filled-surface-100-900"
-		>
-			{#each selectedVehicleImages as image}
-				<header>
-					<img src={image.url} alt="Vehicle Photograph" class="w-48" />
-				</header>
-			{/each}
-		</div>
+	<div class="card m-4 preset-filled-surface-100-900">
+		<!-- AG-Grid Container -->
+		<div class="ag-theme-alpine-dark" style="height: 90vh; width: 100%;" bind:this={gridDiv}></div>
 	</div>
-{/if}
+
+	<!-- Popup for displaying all images -->
+	{#if showPopup}
+		<div id="image-popup" class="z-10 h-screen object-left-top preset-filled-surface-100-900">
+			<button class="close-button" on:click={closePopup}>×</button>
+			<div class="vehicle-images">
+				{#each selectedVehicleImages as image}
+					<header>
+						<img src={image.url} alt="Vehicle Photograph" class="w-48" />
+					</header>
+				{/each}
+			</div>
+		</div>
+	{/if}
+</div>
 
 <style>
 	.close-button {
@@ -170,5 +163,16 @@
 		border: none;
 		font-size: 3.5em;
 		cursor: pointer;
+	}
+	.box {
+		background-color: #0370f3;
+		border-radius: 0.5rem;
+		padding: 1rem;
+	}
+	.box-table {
+		background-color: #222628;
+		padding: 1rem;
+		border-radius: 0.5rem;
+		overflow: hidden;
 	}
 </style>

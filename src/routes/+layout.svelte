@@ -6,10 +6,10 @@
 
 	// Icons
 	import IconMenu from 'lucide-svelte/icons/menu';
-	import IconBike from 'lucide-svelte/icons/bike';
+	import IconDashboard from 'lucide-svelte/icons/layout-dashboard';
 	import IconTable from 'lucide-svelte/icons/table';
-	import IconBoxes from 'lucide-svelte/icons/boxes';
-	import IconImport from 'lucide-svelte/icons/cloud-download';
+	import IconBarcode from 'lucide-svelte/icons/barcode';
+	import IconSync from 'lucide-svelte/icons/database-zap';
 	import IconLogin from 'lucide-svelte/icons/key-square';
 	import IconLogout from 'lucide-svelte/icons/log-out';
 	import IconSettings from 'lucide-svelte/icons/settings';
@@ -58,17 +58,17 @@
 		{/snippet}
 
 		{#snippet tiles()}
-			<Nav.Tile id="0" labelExpanded="Home" href={hrefHome}>
-				<IconBike />
+			<Nav.Tile id="0" label="Home" labelExpanded="Home" href={hrefHome}>
+				<IconDashboard />
 			</Nav.Tile>
-			<Nav.Tile id="1" labelExpanded="Vehicle Inventory" href={hrefVehicles}>
+			<Nav.Tile id="1" label="Units" labelExpanded="Vehicle Inventory" href={hrefVehicles}>
 				<IconTable />
 			</Nav.Tile>
-			<Nav.Tile id="3" labelExpanded="Import XML Vehicles" href={hrefImport}>
-				<IconImport />
+			<Nav.Tile id="2" label="Parts" labelExpanded="OEM Parts" href={hrefParts}>
+				<IconBarcode />
 			</Nav.Tile>
-			<Nav.Tile id="2" labelExpanded="OEM Parts" href={hrefParts}>
-				<IconBoxes />
+			<Nav.Tile id="3" label="Symc" labelExpanded="Import XML Vehicles" href={hrefImport}>
+				<IconSync />
 			</Nav.Tile>
 		{/snippet}
 		{#snippet footer()}
@@ -83,16 +83,16 @@
 					style="cursor: pointer;"
 					aria-label="Logout"
 				>
-					<Nav.Tile id="4" labelExpanded="Logout">
+					<Nav.Tile id="4" label="Logout" labelExpanded="Logout">
 						<IconLogout />
 					</Nav.Tile>
 				</div>
 			{:else}
-				<Nav.Tile id="5" labelExpanded="Login" href={hrefLogin}>
+				<Nav.Tile id="5" label="Login" labelExpanded="Login" href={hrefLogin}>
 					<IconLogin />
 				</Nav.Tile>
 			{/if}
-			<Nav.Tile id="6" labelExpanded="Profile" href={hrefProfile}>
+			<Nav.Tile id="6" label="Profile" labelExpanded="Profile" href={hrefProfile}>
 				<IconProfile />
 			</Nav.Tile>
 			<Nav.Tile id="7" labelExpanded="Settings" href={hrefSettings}>

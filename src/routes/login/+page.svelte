@@ -22,7 +22,7 @@
 </script>
 
 <div class="from-black-500 flex h-screen items-center justify-center bg-gradient-to-r">
-	<div class="card w-96 p-10 shadow-lg preset-filled-surface-100-900">
+	<div class="card w-1/4 p-10 shadow-lg preset-filled-surface-100-900">
 		<h1 class="mb-6 text-2xl font-bold">Login</h1>
 		<form on:submit|preventDefault={login} class="space-y-4">
 			<!-- Email Input -->
