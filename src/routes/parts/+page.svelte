@@ -1,4 +1,5 @@
 <script lang="ts">
+	import '../../app.css';
 	import 'ag-grid-community/styles/ag-grid.css';
 	import 'ag-grid-community/styles/ag-theme-alpine.css';
 	import { onMount } from 'svelte';
@@ -10,9 +11,9 @@
 
 	// Define column structure for AG-Grid
 	let columnDefs = [
-		{ field: 'part_number', sortable: true, filter: true },
-		{ field: 'description', sortable: true, filter: true },
-		{ field: 'retail_pric', sortable: true, filter: true },
+		{ field: 'material_no', sortable: true, filter: true },
+		{ field: 'part_desc', sortable: true, filter: true },
+		{ field: 'retail_price', sortable: true, filter: true },
 		{ field: 'dealer_price', sortable: true, filter: true },
 		{ field: 'distributor_price', sortable: true, filter: true },
 		{ field: 'type', sortable: true, filter: true }
@@ -23,8 +24,8 @@
 		try {
 			const response = await pb.collection('parts').getList(1, 50); // Adjust collection name and pagination as needed
 			rowData = response.items.map((item) => ({
-				part_number: item.part_number,
-				description: item.description,
+				material_no: item.material_no,
+				part_desc: item.part_desc,
 				retail_price: item.retail_price,
 				dealer_price: item.dealer_price,
 				distributor_price: item.distributor_price
@@ -51,9 +52,10 @@
 	onMount(fetchData);
 </script>
 
-<div class="mx-auto w-full">
-	<h1 class="px-4 py-4 text-start text-3xl font-bold">OEM Parts</h1>
-
-	<!-- AG-Grid Container -->
-	<div class="ag-theme-alpine-dark w-full px-4" style="height: 90vh;" bind:this={gridDiv}></div>
+<div class="w-full overflow-y-auto">
+	<h1 class="mt-4 px-4 text-start text-2xl font-bold">OEM Parts</h1>
+	<div class="box-table m-4">
+		<!-- AG-Grid Container -->
+		<div class="ag-theme-alpine-dark" style="height: 88vh;" bind:this={gridDiv}></div>
+	</div>
 </div>

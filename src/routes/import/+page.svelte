@@ -17,10 +17,10 @@
 </script>
 
 <div class="w-full overflow-y-auto">
-	<h1 class="px-4 pt-4 text-start text-3xl font-bold">Data Sync</h1>
+	<h1 class="mt-4 px-4 text-start text-2xl font-bold">Data Sync</h1>
 	<div class="card m-4 p-4 preset-filled-surface-100-900">
-		<h1 class="block text-5xl">Import Vehicles</h1>
-		<p class="text-2xl opacity-20">
+		<h1 class="text-2xl font-bold">Import Vehicles</h1>
+		<p class="text-1xl opacity-20">
 			Imports all vehicles from Dealer Spike universal vehicle XML feed.
 		</p>
 		<button

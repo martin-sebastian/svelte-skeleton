@@ -1,9 +1,11 @@
 <script lang="ts">
+	import '../app.css';
 	import 'ag-grid-community/styles/ag-grid.css';
 	import 'ag-grid-community/styles/ag-theme-alpine.css';
 	import { onMount } from 'svelte';
-	import { Grid } from 'ag-grid-community';
-	import pb from '$lib/pocketbase'; // Import the PocketBase client
+	import { Grid, createGrid } from 'ag-grid-community';
+	import pb from '$lib/pocketbase';
+	import { formatDistanceToNow } from 'date-fns'; // Import from date-fns
 
 	let gridDiv; // Bind to this div for AG-Grid
 	let rowData = []; // Empty array to hold the data from PocketBase
@@ -12,7 +14,6 @@
 	let columnDefs = [
 		{ field: 'title', sortable: true, filter: true },
 		{ field: 'stockNumber', sortable: true, filter: true },
-
 		{
 			field: 'price',
 			sortable: true,
@@ -25,19 +26,34 @@
 				}).format(params.value);
 			}
 		},
-		{ field: 'updated', sortable: true, filter: true }
+		{
+			field: 'updated',
+			sortable: true,
+			filter: true,
+			cellRenderer: TimeAgoRenderer // Use a custom cell renderer for the updated field
+		}
 	];
+
+	// Custom renderer using date-fns to display "time ago"
+	function TimeAgoRenderer(params) {
+		const el = document.createElement('div');
+		const timeAgo = formatDistanceToNow(new Date(params.value), { addSuffix: true });
+		el.textContent = timeAgo; // Set the formatted "time ago" value
+		return el;
+	}
 
 	// Fetch data from PocketBase
 	async function fetchData() {
 		try {
+			console.log('Fetching vehicles from PocketBase...');
 			const response = await pb.collection('vehicles').getList(1, 10); // Adjust collection name and pagination as needed
+			console.log('Fetched vehicles:', response.items);
 			rowData = response.items.map((item) => ({
 				title: item.title,
 				stockNumber: item.stock_number,
 				year: item.year,
 				price: item.price,
-				updated: item.updated
+				updated: item.updated // Ensure updated is in a format that TimeAgo can handle (ISO 8601 or timestamp)
 			}));
 			initializeGrid(); // Initialize AG-Grid once the data is fetched
 		} catch (error) {
@@ -47,7 +63,7 @@
 
 	// Initialize AG-Grid with fetched data
 	function initializeGrid() {
-		new Grid(gridDiv, {
+		createGrid(gridDiv, {
 			columnDefs,
 			rowData,
 			defaultColDef: {
@@ -62,7 +78,7 @@
 </script>
 
 <div class="mx-auto w-full overflow-y-auto">
-	<h1 class="px-4 pt-4 text-start text-3xl font-bold">Dashboard</h1>
+	<h1 class="mt-4 px-4 text-start text-2xl font-bold">Dashboard</h1>
 
 	<div class="card my-4 px-4">
 		<div class="grid grid-cols-3 gap-4">
@@ -73,23 +89,9 @@
 			<div class="box">05</div>
 			<div class="box-table col-span-2">
 				<!-- AG-Grid Container -->
-				<div class="ag-theme-alpine-dark" style="height: 50vh;" bind:this={gridDiv}></div>
+				<div class="ag-theme-alpine-dark" style="height: 51vh;" bind:this={gridDiv}></div>
 			</div>
 			<div class="box">06</div>
 		</div>
 	</div>
 </div>
-
-<style>
-	.box {
-		background-color: #0370f3;
-		border-radius: 0.5rem;
-		padding: 1rem;
-	}
-	.box-table {
-		background-color: #222628;
-		padding: 1rem;
-		border-radius: 0.5rem;
-		overflow: hidden;
-	}
-</style>

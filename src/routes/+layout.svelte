@@ -8,6 +8,7 @@
 	import IconMenu from 'lucide-svelte/icons/menu';
 	import IconDashboard from 'lucide-svelte/icons/layout-dashboard';
 	import IconTable from 'lucide-svelte/icons/table';
+	import IconSearch from 'lucide-svelte/icons/text-search';
 	import IconBarcode from 'lucide-svelte/icons/barcode';
 	import IconSync from 'lucide-svelte/icons/database-zap';
 	import IconLogin from 'lucide-svelte/icons/key-square';
@@ -19,6 +20,7 @@
 	let hrefVehicles = '/vehicles';
 	let hrefParts = '/parts';
 	let hrefImport = '/import';
+	let hrefMu = '/mu';
 	let hrefLogin = '/login';
 	let hrefSettings = '/settings';
 	let hrefProfile = '/profile';
@@ -61,13 +63,16 @@
 			<Nav.Tile id="0" label="Home" labelExpanded="Home" href={hrefHome}>
 				<IconDashboard />
 			</Nav.Tile>
-			<Nav.Tile id="1" label="Units" labelExpanded="Vehicle Inventory" href={hrefVehicles}>
+			<Nav.Tile id="1" label="Vehicles" labelExpanded="Vehicle Inventory" href={hrefVehicles}>
 				<IconTable />
+			</Nav.Tile>
+			<Nav.Tile id="10" label="MU" labelExpanded="Major Units" href={hrefMu}>
+				<IconSearch />
 			</Nav.Tile>
 			<Nav.Tile id="2" label="Parts" labelExpanded="OEM Parts" href={hrefParts}>
 				<IconBarcode />
 			</Nav.Tile>
-			<Nav.Tile id="3" label="Symc" labelExpanded="Import XML Vehicles" href={hrefImport}>
+			<Nav.Tile id="3" label="Sync" labelExpanded="Import XML Vehicles" href={hrefImport}>
 				<IconSync />
 			</Nav.Tile>
 		{/snippet}

@@ -13,3 +13,15 @@
 .ag-theme-alpine-dark .ag-body {
 	border: 0px solid rgba(255, 255, 255, 0.1); /* Main body border color */
 }
+
+.box {
+	background-color: #0370f3;
+	border-radius: 0.5rem;
+	padding: 1rem;
+}
+.box-table {
+	background-color: #222628;
+	padding: 1rem 0.5rem 0.5rem 0.5rem;
+	border-radius: 0.5rem;
+	overflow: hidden;
+}

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import '../../app.css';
 	import 'ag-grid-community/styles/ag-grid.css';
 	import 'ag-grid-community/styles/ag-theme-alpine.css';
 
@@ -132,23 +133,36 @@
 	onMount(fetchData);
 </script>
 
-<div class="w-full overflow-y-auto">
-	<h1 class="mt-4 px-4 text-start text-3xl heading-font-weight">Vehicle Inventory</h1>
+<div class="w-full overflow-y-hidden">
+	<h1 class="mt-4 px-4 text-start text-2xl heading-font-weight">Vehicle Inventory</h1>
 
-	<div class="card m-4 preset-filled-surface-100-900">
+	<div class="box-table m-4">
 		<!-- AG-Grid Container -->
-		<div class="ag-theme-alpine-dark" style="height: 90vh; width: 100%;" bind:this={gridDiv}></div>
+		<div class="ag-theme-alpine-dark" style="height: 89vh; width: 100%;" bind:this={gridDiv}></div>
 	</div>
 
 	<!-- Popup for displaying all images -->
 	{#if showPopup}
-		<div id="image-popup" class="z-10 h-screen object-left-top preset-filled-surface-100-900">
-			<button class="close-button" on:click={closePopup}>×</button>
-			<div class="vehicle-images">
+		<div id="image-popup" class="w-full">
+			<div class="py-4">
+				<div class="grid grid-cols-12 gap-4 px-5">
+					<div class="col-span-11 rounded bg-primary-600 py-2 ps-5 heading-font-weight">
+						<span class="text-2xl">325</span> IMAGES
+					</div>
+					<div class="col-span-1 rounded bg-primary-600 text-center heading-font-weight">
+						<button type="button" class="btn w-full bg-primary-600 p-6" on:click={closePopup}>
+							<span class="text-1xl">CLOSE</span>
+						</button>
+					</div>
+				</div>
+			</div>
+			<div class="grid grid-cols-8 gap-4 px-5">
 				{#each selectedVehicleImages as image}
-					<header>
-						<img src={image.url} alt="Vehicle Photograph" class="w-48" />
-					</header>
+					<div class="card card-hover w-full overflow-hidden">
+						<header>
+							<img src={image.url} class="object-cover" alt={image.title} />
+						</header>
+					</div>
 				{/each}
 			</div>
 		</div>
@@ -156,23 +170,16 @@
 </div>
 
 <style>
-	.close-button {
-		float: right;
-		color: red;
-		background: none;
-		border: none;
-		font-size: 3.5em;
-		cursor: pointer;
-	}
-	.box {
-		background-color: #0370f3;
-		border-radius: 0.5rem;
-		padding: 1rem;
-	}
-	.box-table {
-		background-color: #222628;
-		padding: 1rem;
-		border-radius: 0.5rem;
-		overflow: hidden;
+	#image-popup {
+		position: fixed;
+		top: 0;
+		left: 0;
+		overflow-y: auto;
+		width: 100%;
+		height: 100%;
+		margin: 0;
+		padding: 0;
+		background-color: rgba(0, 0, 0, 0.95);
+		z-index: 1000;
 	}
 </style>
