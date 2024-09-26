@@ -1,12 +1,12 @@
 <script lang="ts">
+	import pb from '$lib/pocketbase';
+	import { onDestroy } from 'svelte';
 	import '../../app.css';
 	import 'ag-grid-community/styles/ag-grid.css';
-	import 'ag-grid-community/styles/ag-theme-alpine.css';
+	import 'ag-grid-community/styles/ag-theme-alpine.css'; // or 'ag-theme-alpine-dark.css' for dark mode
 
 	import { onMount } from 'svelte';
 	import { createGrid } from 'ag-grid-community';
-
-	import pb from '$lib/pocketbase';
 
 	let gridDiv;
 	let gridApi;
@@ -22,7 +22,8 @@
 				const img = document.createElement('img');
 				img.src = params.value;
 				img.alt = 'Vehicle Image';
-				img.style.width = '60px';
+				img.style.margin = '5px';
+				img.style.width = '50px';
 				img.style.height = 'auto';
 				img.style.borderRadius = '6px';
 				img.style.cursor = 'pointer';
@@ -107,16 +108,18 @@
 	function initializeGrid() {
 		const gridOptions = {
 			columnDefs,
-			rowData,
+			rowData: rowData, // Ensure rowData is passed here
 			defaultColDef: {
 				flex: 1,
 				minWidth: 100
 			},
 			onGridReady: (params) => {
 				gridApi = params.api;
+				gridApi.setRowData(rowData); // Ensure data is set when grid is ready
 			}
 		};
 
+		// Initialize the grid after rowData is fetched
 		gridApi = createGrid(gridDiv, gridOptions);
 	}
 
@@ -130,7 +133,15 @@
 		showPopup = false;
 	}
 
-	onMount(fetchData);
+	onMount(() => {
+		fetchData(); // Fetch data when the page is mounted
+	});
+
+	onDestroy(() => {
+		if (gridApi) {
+			gridApi.destroy(); // Clean up AG-Grid when navigating away from this page
+		}
+	});
 </script>
 
 <div class="w-full overflow-y-hidden">

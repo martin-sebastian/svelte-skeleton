@@ -10,15 +10,21 @@
 	async function login() {
 		try {
 			// Attempt to authenticate with PocketBase using email and password
-			await pb.collection('users').authWithPassword(email, password);
+			const authData = await pb.collection('users').authWithPassword(email, password);
 
-			// If login is successful, redirect the user to the homepage (or any protected page)
+			// Log the authentication response to verify it's working
+			console.log('Authenticated:', authData);
+
+			// Redirect the user to the home page
 			goto('/');
 		} catch (error) {
 			// If login fails, show an error message
 			errorMessage = 'Login failed. Please check your credentials.';
+			console.error('Login error:', error);
 		}
 	}
+
+	console.log('Login page loaded'); // Debugging
 </script>
 
 <div class="flex h-screen w-full items-center justify-center bg-gradient-to-r">
@@ -34,7 +40,7 @@
 					bind:value={email}
 					required
 					placeholder="Enter your email"
-					class="w-full rounded border p-2"
+					class="w-full rounded border p-2 text-lg text-black"
 					autocomplete="email"
 				/>
 			</div>
@@ -48,7 +54,7 @@
 					bind:value={password}
 					required
 					placeholder="Enter your password"
-					class="w-full rounded border p-2"
+					class="w-full rounded border p-2 text-lg text-black"
 					autocomplete="current-password"
 				/>
 			</div>

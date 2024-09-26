@@ -13,7 +13,7 @@
 </script>
 
 <div class="user-profile">
-	<h1 class="type-scale-13">Welcome, {data.user.name}!</h1>
+	<h1 class="type-scale-12">Welcome, {data.user.name}!</h1>
 	<div class="avatar">
 		<!-- Use Skeleton's Avatar component -->
 		{#if avatarUrl}

@@ -13,10 +13,18 @@
 	let columnDefs = [
 		{ field: 'material_no', sortable: true, filter: true },
 		{ field: 'part_desc', sortable: true, filter: true },
+		{ field: 'last_yr_util', sortable: true, filter: true },
 		{ field: 'retail_price', sortable: true, filter: true },
 		{ field: 'dealer_price', sortable: true, filter: true },
 		{ field: 'distributor_price', sortable: true, filter: true },
-		{ field: 'type', sortable: true, filter: true }
+		{ field: 'superseded_part', sortable: true, filter: true },
+		{ field: 'superseded_by', sortable: true, filter: true },
+		{ field: 'interchangable', sortable: true, filter: true },
+		{ field: 'qty_assembly', sortable: true, filter: true },
+		{ field: 'price_uom', sortable: true, filter: true },
+		{ field: 'order_unit', sortable: true, filter: true },
+		{ field: 'in_package_qty', sortable: true, filter: true },
+		{ field: 'in_package_uom', sortable: true, filter: true }
 	];
 
 	// Fetch data from PocketBase
@@ -26,9 +34,18 @@
 			rowData = response.items.map((item) => ({
 				material_no: item.material_no,
 				part_desc: item.part_desc,
+				last_yr_util: item.last_yr_util,
 				retail_price: item.retail_price,
 				dealer_price: item.dealer_price,
-				distributor_price: item.distributor_price
+				distributor_price: item.distributor_price,
+				superseded_part: item.superseded_part,
+				superseded_by: item.superseded_by,
+				interchangable: item.interchangable,
+				qty_assembly: item.qty_assembly,
+				price_uom: item.price_uom,
+				order_unit: item.order_unit,
+				in_package_qty: item.in_package_qty,
+				in_package_uom: item.in_package_uom
 			}));
 			initializeGrid(); // Initialize AG-Grid once the data is fetched
 		} catch (error) {

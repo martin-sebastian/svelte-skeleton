@@ -34,3 +34,5 @@ pb_public/
 
 # Ignore PocketBase executable
 errors
+pocketbase/pb_data/logs.db
+pocketbase/pb_data/logs.db

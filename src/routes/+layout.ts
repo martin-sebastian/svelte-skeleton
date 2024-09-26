@@ -5,8 +5,11 @@ export async function load({ url }) {
 	const user = pb.authStore.model; // Get the authenticated user
 	const currentPath = url.pathname; // Get the current path
 
-	// If the user is not logged in and is not already on the login page, redirect them to the login page
-	if (!user && currentPath !== '/login') {
+	// List of unprotected routes that don't require authentication
+	const publicRoutes = ['/login', '/register', '/forgot-password'];
+
+	// If the user is not logged in and the route is not public, redirect to login
+	if (!user && !publicRoutes.includes(currentPath)) {
 		throw redirect(302, '/login');
 	}
 
