@@ -36,3 +36,4 @@ pb_public/
 errors
 pocketbase/pb_data/logs.db
 pocketbase/pb_data/logs.db
+/pocketbase
