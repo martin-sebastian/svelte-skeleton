@@ -44,7 +44,6 @@
 		"date-fns": "^4.1.0",
 		"fast-xml-parser": "^4.5.0",
 		"lucide-svelte": "^0.441.0",
-		"pocketbase": "^0.21.5",
-		"xmldom": "^0.6.0"
+		"pocketbase": "^0.21.5"
 	}
 }
