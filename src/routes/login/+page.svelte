@@ -1,6 +1,9 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation'; // SvelteKit's navigation helper
 	import pb from '$lib/pocketbase'; // Import PocketBase client
+	// Icons
+	import ShieldPlus from 'lucide-svelte/icons/shield-plus';
 
 	let email = '';
 	let password = '';
@@ -24,16 +27,24 @@
 		}
 	}
 
+	// Redirect to dashboard if the user is already authenticated
+	onMount(() => {
+		if (pb.authStore.isValid) {
+			goto('/dashboard');
+		}
+	});
+
 	console.log('Login page loaded'); // Debugging
 </script>
 
 <div class="flex h-screen w-full items-center justify-center bg-gradient-to-r">
 	<div class="card w-1/4 p-10 shadow-lg preset-filled-surface-100-900">
-		<h1 class="mb-6 text-2xl font-bold">Login</h1>
+		<ShieldPlus size={96} color="#3B82F6" class="mx-auto mb-5" />
+		<h1 class="text-1xl mb-4 text-center font-bold">DealerOps Login</h1>
 		<form on:submit|preventDefault={login} class="space-y-4">
 			<!-- Email Input -->
 			<div>
-				<label for="email" class="block text-sm font-medium">Email:</label>
+				<label for="email" class="block text-sm font-medium opacity-60">Email:</label>
 				<input
 					id="email"
 					type="email"
@@ -47,7 +58,7 @@
 
 			<!-- Password Input -->
 			<div>
-				<label for="password" class="block text-sm font-medium">Password:</label>
+				<label for="password" class="block text-sm font-medium opacity-60">Password:</label>
 				<input
 					id="password"
 					type="password"
@@ -63,14 +74,18 @@
 			{#if errorMessage}
 				<p class="text-red-500">{errorMessage}</p>
 			{/if}
-
-			<!-- Login Button -->
-			<button
-				type="submit"
-				class="w-full rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-700"
-			>
-				Log In
-			</button>
+			<div class="pt-3">
+				<!-- Login Button -->
+				<button
+					type="submit"
+					class="w-full rounded bg-blue-500 px-4 py-3 text-white heading-font-weight hover:bg-blue-700"
+				>
+					EXISTING USER LOGIN
+				</button>
+			</div>
 		</form>
+		<a href="/register" class="mt-4 block text-center text-blue-500 hover:underline">
+			Don't have an account? Register here.</a
+		>
 	</div>
 </div>

@@ -48,7 +48,8 @@
 </script>
 
 <!-- Use $page directly -->
-{#if $page.url.pathname !== '/login'}
+{#if $page.url.pathname !== '/login' && $page.url.pathname !== '/register' && $page.url.pathname !== '/forgot-password'}
+	<!-- Main layout content here -->
 	<div class="card grid h-[100vh] w-full grid-cols-[auto_1fr] border-[1px] border-surface-100-900">
 		<!-- Navigation Rail -->
 		<Nav.Rail expanded={$isExpanded}>
