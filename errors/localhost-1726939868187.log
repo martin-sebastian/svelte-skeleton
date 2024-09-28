@@ -1,6 +1,0 @@
-login:1 [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) <input id=​"password" type=​"password" value required placeholder=​"Enter your password" class=​"w-full rounded border p-2">​
-client:495 [vite] connecting...
-client:614 [vite] connected.
-login:1 [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) <input id=​"password" type=​"password" required placeholder=​"Enter your password" class=​"w-full rounded border p-2">​
-client:223 [vite] hot updated: /src/routes/vehicles/+page.svelte
-client:223 [vite] hot updated: /src/app.css
