@@ -30,7 +30,7 @@
 	// Redirect to dashboard if the user is already authenticated
 	onMount(() => {
 		if (pb.authStore.isValid) {
-			goto('/dashboard');
+			goto('/');
 		}
 	});
 
@@ -80,12 +80,15 @@
 					type="submit"
 					class="w-full rounded bg-blue-500 px-4 py-3 text-white heading-font-weight hover:bg-blue-700"
 				>
-					EXISTING USER LOGIN
+					LOGIN
 				</button>
 			</div>
 		</form>
 		<a href="/register" class="mt-4 block text-center text-blue-500 hover:underline">
 			Don't have an account? Register here.</a
 		>
+		<a href="/forgot-password" class="mt-4 block text-center text-blue-500 hover:underline">
+			Forgot your password? Reset it here.
+		</a>
 	</div>
 </div>

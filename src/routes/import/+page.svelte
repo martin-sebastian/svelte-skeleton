@@ -80,7 +80,7 @@
 
 <div class="w-full overflow-y-auto">
 	<h1 class="mt-4 px-4 text-start text-2xl font-bold">Data Sync</h1>
-	<div class="card m-4 p-4 preset-filled-surface-100-900">
+	<div class="card card-hover m-4 p-4 preset-filled-surface-100-900">
 		<h1 class="text-2xl font-bold">Dealer Spike Vehicles Inventory</h1>
 		<p class="text-2xl opacity-20">
 			Imports all vehicles from Dealer Spike universal vehicle XML feed or a CSV file.
@@ -102,7 +102,7 @@
 			<p>{importStatus}</p>
 		</div>
 	</div>
-	<div class="card m-4 p-4 preset-filled-surface-100-900">
+	<div class="card card-hover m-4 p-4 preset-filled-surface-100-900">
 		<h1 class="text-2xl font-bold">BRP OEM Parts Data</h1>
 		<p class="text-2xl opacity-20">Imports OEM Parts list from a CSV file.</p>
 		<p class="text-1xl opacity-60">

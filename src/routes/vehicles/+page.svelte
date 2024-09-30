@@ -3,10 +3,11 @@
 	import { onDestroy } from 'svelte';
 	import '../../app.css';
 	import 'ag-grid-community/styles/ag-grid.css';
-	import 'ag-grid-community/styles/ag-theme-alpine.css'; // or 'ag-theme-alpine-dark.css' for dark mode
+	import 'ag-grid-community/styles/ag-theme-alpine.css';
 
 	import { onMount } from 'svelte';
 	import { createGrid } from 'ag-grid-community';
+	import { id } from 'date-fns/locale';
 
 	let gridDiv;
 	let gridApi;
@@ -14,37 +15,65 @@
 	let selectedVehicleImages = [];
 	let showPopup = false;
 
+	// Function to generate thumbnail URL
+	function generateThumbnailUrl(imageUrl) {
+		const baseThumbnailUrl = 'https://cdnmedia.endeavorsuite.com/images/ThumbGenerator/Thumb.aspx';
+		const params = `?img=${encodeURIComponent(imageUrl)}&mw=300&mh=197`;
+		return baseThumbnailUrl + params;
+	}
+
 	let columnDefs = [
 		{
-			headerName: 'Image',
-			field: 'imageUrl',
+			headerName: 'Images',
+			field: 'allImages',
 			cellRenderer: (params) => {
-				const img = document.createElement('img');
-				img.src = params.value;
-				img.alt = 'Vehicle Image';
-				img.style.margin = '5px';
-				img.style.width = '50px';
-				img.style.height = 'auto';
-				img.style.borderRadius = '6px';
-				img.style.cursor = 'pointer';
-				img.tabIndex = 0;
+				const container = document.createElement('div');
+				container.style.display = 'flex'; // Use flexbox to display images horizontally
+				container.style.gap = '5px'; // Add spacing between images
 
-				img.addEventListener('click', () => {
-					openPopup(params.data.allImages);
+				// Loop through all images and render them next to each other as thumbnails
+				params.value.forEach((imgData) => {
+					const img = document.createElement('img');
+					img.src = generateThumbnailUrl(imgData.url); // Generate thumbnail URL
+					img.alt = 'Vehicle Image';
+					img.style.width = '50px';
+					img.style.height = 'auto';
+					img.style.borderRadius = '6px';
+					img.style.cursor = 'pointer';
+					img.tabIndex = 0;
+					img.loading = 'lazy'; // Enable lazy loading
+
+					// Add click event to open full-size images in popup
+					img.addEventListener('click', () => {
+						openPopup(params.data.allImages); // All images are passed, including full size
+					});
+
+					// Add keyboard event to open popup on enter/space key
+					img.addEventListener('keydown', (event) => {
+						if (event.key === 'Enter' || event.key === ' ') {
+							openPopup(params.data.allImages);
+						}
+					});
+
+					// Append each image to the container
+					container.appendChild(img);
 				});
 
-				img.addEventListener('keydown', (event) => {
-					if (event.key === 'Enter' || event.key === ' ') {
-						openPopup(params.data.allImages);
-					}
-				});
-
-				return img;
+				return container;
 			},
 			sortable: false,
 			filter: false
 		},
-		{ field: 'stockNumber', sortable: true, filter: true },
+		{
+			field: 'stockNumber',
+			sortable: true,
+			filter: true,
+			cellRenderer: (params) => {
+				// Dynamically create the link using the vehicle's id and stock number
+				return `<a class="btn w-full btn-sm bg-gray-700 hover:bg-blue-900" href="/vehicles/${params.data.id}" class="btn">${params.value}</a>`;
+				console.log('params:', params);
+			}
+		},
 		{ field: 'title', sortable: true, filter: true },
 		{ field: 'year', sortable: true, filter: true },
 		{ field: 'make', sortable: true, filter: true },
@@ -54,7 +83,6 @@
 			sortable: true,
 			filter: true,
 			valueFormatter: (params) => {
-				// Format price as currency (USD)
 				return new Intl.NumberFormat('en-US', {
 					style: 'currency',
 					currency: 'USD'
@@ -69,35 +97,33 @@
 
 			// Fetch vehicles with expanded vehicle_images relation
 			const vehicles = await pb.collection('vehicles').getList(1, 50, {
-				expand: 'vehicle_images' // Expand all related images
+				expand: 'vehicle_images'
 			});
 
-			console.log('Fetched vehicles:', vehicles); // Log the fetched data
+			console.log('Fetched vehicles:', vehicles);
 
 			// Process the vehicle data
 			rowData = vehicles.items.map((vehicle) => {
 				const images = vehicle.expand?.vehicle_images || [];
 
-				// Get the first image URL and all images
-				const imageUrl = images.length > 0 ? images[0].imageurl : null;
-
+				// Get all image URLs (thumbnails and full-size)
 				const allImages = images.map((img) => ({
-					url: img.imageurl // Use the full URL from the database
+					url: img.imageurl // Use the full-size image URL
 				}));
 
 				return {
+					id: vehicle.id,
 					stockNumber: vehicle.stock_number,
 					title: vehicle.title,
 					year: vehicle.year,
 					make: vehicle.manufacturer,
 					model: vehicle.model_name,
 					price: vehicle.price,
-					imageUrl: imageUrl, // Attach first image URL to the row data
-					allImages: allImages // Attach all images for the popup
+					allImages: allImages // Attach all images for the row
 				};
 			});
 
-			console.log('Processed rowData for AG-Grid:', rowData); // Log the processed rowData
+			console.log('Processed rowData for AG-Grid:', rowData);
 
 			initializeGrid();
 		} catch (error) {
@@ -108,14 +134,14 @@
 	function initializeGrid() {
 		const gridOptions = {
 			columnDefs,
-			rowData: rowData, // Ensure rowData is passed here
+			rowData: rowData,
 			defaultColDef: {
 				flex: 1,
 				minWidth: 100
 			},
 			onGridReady: (params) => {
 				gridApi = params.api;
-				gridApi.setRowData(rowData); // Ensure data is set when grid is ready
+				gridApi.setRowData(rowData);
 			}
 		};
 
@@ -124,9 +150,9 @@
 	}
 
 	function openPopup(images) {
-		selectedVehicleImages = images;
+		selectedVehicleImages = images.map((image) => image.url); // Use full-size images in popup
 		showPopup = true;
-		console.log('Opening popup with images:', images);
+		console.log('Opening popup with images:', selectedVehicleImages);
 	}
 
 	function closePopup() {
@@ -158,7 +184,7 @@
 			<div class="py-4">
 				<div class="grid grid-cols-12 gap-4 px-5">
 					<div class="col-span-11 rounded bg-primary-600 py-2 ps-5 heading-font-weight">
-						<span class="text-2xl">325</span> IMAGES
+						<span class="text-2xl">{selectedVehicleImages.length}</span> IMAGES
 					</div>
 					<div class="col-span-1 rounded bg-primary-600 text-center heading-font-weight">
 						<button type="button" class="btn w-full bg-primary-600 p-6" on:click={closePopup}>
@@ -171,7 +197,7 @@
 				{#each selectedVehicleImages as image}
 					<div class="card card-hover w-full overflow-hidden">
 						<header>
-							<img src={image.url} class="object-cover" alt={image.title} />
+							<img src={image} class="object-cover" alt="Vehicle Product" />
 						</header>
 					</div>
 				{/each}

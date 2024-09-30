@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import PocketBase from 'pocketbase';
+	import { onMount } from 'svelte';
+	import pb from '$lib/pocketbase'; // Reuse the PocketBase instance from a central location
 	import { writable } from 'svelte/store';
-
-	const pb = new PocketBase('http://127.0.0.1:8090'); // Adjust to your PocketBase URL
 
 	let email = '';
 	let password = '';
@@ -42,6 +41,7 @@
 			errorMessage = error.message || 'An error occurred during registration.';
 		}
 	}
+
 	// Redirect to dashboard if the user is already authenticated
 	onMount(() => {
 		if (pb.authStore.isValid) {
@@ -50,67 +50,78 @@
 	});
 </script>
 
-<div class="container mx-auto mt-10 max-w-md p-4">
-	<h1 class="mb-4 text-2xl font-bold">Register</h1>
+<div class="flex h-screen w-full items-center justify-center bg-gradient-to-r">
+	<div class="card w-1/4 p-10 shadow-lg preset-filled-surface-100-900">
+		<div class="container mx-auto mt-10 max-w-md p-4">
+			<h1 class="mb-4 text-2xl font-bold">Register</h1>
 
-	<!-- Show error message if registration fails -->
-	{#if errorMessage}
-		<div class="mb-4 rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700">
-			{errorMessage}
-		</div>
-	{/if}
+			<!-- Show error message if registration fails -->
+			{#if errorMessage}
+				<div class="mb-4 rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700">
+					{errorMessage}
+				</div>
+			{/if}
 
-	<!-- Show success message when registration is successful -->
-	{#if successMessage}
-		<div class="mb-4 rounded border border-green-400 bg-green-100 px-4 py-3 text-green-700">
-			{successMessage}
-		</div>
-	{/if}
+			<!-- Show success message when registration is successful -->
+			{#if successMessage}
+				<div class="mb-4 rounded border border-green-400 bg-green-100 px-4 py-3 text-green-700">
+					{successMessage}
+				</div>
+			{/if}
 
-	<!-- Registration Form -->
-	<form on:submit|preventDefault={registerUser}>
-		<div class="mb-4">
-			<label class="mb-2 block text-sm font-bold text-gray-700" for="email">Email</label>
-			<input
-				id="email"
-				type="email"
-				bind:value={email}
-				class="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
-				required
-			/>
-		</div>
+			<!-- Registration Form -->
+			<form on:submit|preventDefault={registerUser}>
+				<div class="mb-4">
+					<label class="mb-2 block text-sm font-bold text-gray-700" for="email">Email</label>
+					<input
+						id="email"
+						type="email"
+						bind:value={email}
+						class="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
+						required
+					/>
+				</div>
 
-		<div class="mb-4">
-			<label class="mb-2 block text-sm font-bold text-gray-700" for="password">Password</label>
-			<input
-				id="password"
-				type="password"
-				bind:value={password}
-				class="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
-				required
-			/>
-		</div>
+				<div class="mb-4">
+					<label class="mb-2 block text-sm font-bold text-gray-700" for="password">Password</label>
+					<input
+						id="password"
+						type="password"
+						bind:value={password}
+						class="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
+						required
+					/>
+				</div>
 
-		<div class="mb-4">
-			<label class="mb-2 block text-sm font-bold text-gray-700" for="passwordConfirm"
-				>Confirm Password</label
-			>
-			<input
-				id="passwordConfirm"
-				type="password"
-				bind:value={passwordConfirm}
-				class="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
-				required
-			/>
-		</div>
+				<div class="mb-4">
+					<label class="mb-2 block text-sm font-bold text-gray-700" for="passwordConfirm"
+						>Confirm Password</label
+					>
+					<input
+						id="passwordConfirm"
+						type="password"
+						bind:value={passwordConfirm}
+						class="focus:shadow-outline w-full appearance-none rounded border px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none"
+						required
+					/>
+				</div>
 
-		<div class="flex items-center justify-between">
-			<button
-				type="submit"
-				class="focus:shadow-outline rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700 focus:outline-none"
-			>
-				Register
-			</button>
+				<div class="flex items-center justify-between">
+					<button
+						type="submit"
+						class="focus:shadow-outline rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700 focus:outline-none"
+					>
+						Register
+					</button>
+					<a
+						href="/login"
+						type="button"
+						class="focus:shadow-outline hover:preset-outlined-primary-700 rounded px-4 py-2 font-bold text-white preset-outlined-primary-500 focus:outline-none"
+					>
+						Cancel
+					</a>
+				</div>
+			</form>
 		</div>
-	</form>
+	</div>
 </div>

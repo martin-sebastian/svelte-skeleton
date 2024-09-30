@@ -1,15 +1,16 @@
 <script lang="ts">
-	export let data; // Get the user data passed from the load function
+	// Get the user data passed from the load function
+	export let data;
+
 	import { page } from '$app/stores'; // Import $page store to track URL
-
-	$: console.log('Current path:', $page.url.pathname);
-	$: console.log('User data:', data.user);
-
 	import '../app.css';
 	import { Nav } from '@skeletonlabs/skeleton-svelte';
+	import { Avatar } from '@skeletonlabs/skeleton-svelte'; // Import Skeleton Avatar component
 	import pb from '$lib/pocketbase'; // Import PocketBase client
+	import { writable } from 'svelte/store';
 
 	// Icons
+	import Skull from 'lucide-svelte/icons/skull';
 	import IconMenu from 'lucide-svelte/icons/menu';
 	import IconDashboard from 'lucide-svelte/icons/layout-dashboard';
 	import IconTable from 'lucide-svelte/icons/table';
@@ -27,13 +28,17 @@
 	let hrefParts = '/parts';
 	let hrefService = '/service';
 	let hrefImport = '/import';
-	let hrefMu = '/mu';
+	let hrefMajorUnits = '/major-units';
 	let hrefLogin = '/login';
 	let hrefSettings = '/settings';
 	let hrefProfile = '/profile';
 
-	import { writable } from 'svelte/store';
 	let isExpanded = writable(false);
+
+	// Construct the avatar URL from PocketBase if the avatar exists
+	const avatarUrl = data?.user?.avatar
+		? `http://127.0.0.1:8090/api/files/${data.user.collectionId}/${data.user.id}/${data.user.avatar}`
+		: null;
 
 	// Logout function
 	function logout() {
@@ -43,32 +48,42 @@
 
 	function toggleNav() {
 		isExpanded.update((value) => !value);
-		console.log($isExpanded); // Check if the value is changing
 	}
+
+	$: console.log('Current path:', $page.url.pathname);
+	$: console.log('User data:', data?.user);
 </script>
 
 <!-- Use $page directly -->
 {#if $page.url.pathname !== '/login' && $page.url.pathname !== '/register' && $page.url.pathname !== '/forgot-password'}
-	<!-- Main layout content here -->
+	<div class="fixed w-screen">
+		<div class="avatar float-end m-2 hidden">
+			<!-- Show user avatar or fallback if no avatar exists -->
+			{#if avatarUrl}
+				<Avatar src={avatarUrl} name={data.user.name} />
+			{:else}
+				<!-- Fallback avatar with an icon -->
+				<Avatar name={data?.user?.name || 'Guest'} background="preset-filled-primary-500">
+					<Skull size={24} />
+				</Avatar>
+			{/if}
+		</div>
+		<h1 class="float-end mx-4 py-2 opacity-40 type-scale-2">
+			Welcome, {data?.user?.name || 'Guest'}!
+		</h1>
+	</div>
+
 	<div class="card grid h-[100vh] w-full grid-cols-[auto_1fr] border-[1px] border-surface-100-900">
 		<!-- Navigation Rail -->
 		<Nav.Rail expanded={$isExpanded}>
+			<!-- Snippet for toggle button -->
 			{#snippet header()}
-				<div
-					on:click={toggleNav}
-					on:keydown={(e) => e.key === 'Enter' && toggleNav()}
-					tabindex="0"
-					role="button"
-					class="flex w-full flex-col items-center justify-center gap-1 rounded-container hover:preset-filled-surface-50-950"
-					style="cursor: pointer;"
-					aria-label="Toggle Navigation"
-				>
-					<Nav.Tile labelExpanded="Collapse Side Bar">
-						<IconMenu />
-					</Nav.Tile>
-				</div>
+				<Nav.Tile on:click={toggleNav} labelExpanded="Collapse Side Bar">
+					<IconMenu />
+				</Nav.Tile>
 			{/snippet}
 
+			<!-- Snippet for navigation tiles -->
 			{#snippet tiles()}
 				<Nav.Tile id="0" label="Home" labelExpanded="Home" href={hrefHome}>
 					<IconDashboard />
@@ -76,7 +91,7 @@
 				<Nav.Tile id="1" label="Vehicles" labelExpanded="Vehicle Inventory" href={hrefVehicles}>
 					<IconTable />
 				</Nav.Tile>
-				<Nav.Tile id="10" label="MU" labelExpanded="Major Units" href={hrefMu}>
+				<Nav.Tile id="10" label="Major Units" labelExpanded="Major Units" href={hrefMajorUnits}>
 					<IconSearch />
 				</Nav.Tile>
 				<Nav.Tile id="2" label="Parts" labelExpanded="OEM Parts" href={hrefParts}>
@@ -89,22 +104,22 @@
 					<IconSync />
 				</Nav.Tile>
 			{/snippet}
+
 			{#snippet footer()}
-				<!-- Conditionally render the login/logout option based on whether the user is logged in -->
-				{#if data.user}
-					<div
+				<!-- Conditionally show login/logout -->
+				{#if data?.user}
+					<button
 						on:click={logout}
-						on:keydown={(e) => e.key === 'Enter' && logout()}
-						tabindex="0"
-						role="button"
+						on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && logout()}
+						type="button"
 						class="flex w-full flex-col items-center justify-center gap-1 rounded-container hover:preset-filled-surface-50-950"
-						style="cursor: pointer;"
 						aria-label="Logout"
+						style="cursor: pointer;"
 					>
 						<Nav.Tile id="4" label="Logout" labelExpanded="Logout">
 							<IconLogout />
 						</Nav.Tile>
-					</div>
+					</button>
 				{:else}
 					<Nav.Tile id="5" label="Login" labelExpanded="Login" href={hrefLogin}>
 						<IconLogin />
@@ -122,6 +137,5 @@
 		<slot></slot>
 	</div>
 {:else}
-	<!-- Only for login page -->
 	<slot></slot>
 {/if}
